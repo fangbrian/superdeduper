@@ -7,16 +7,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity implements PhotoSetManager.OnPhotoSetListener{
+public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GalleryChangeManager.getInstance().initializeObserver(this);
-        PhotoSetManager.getInstance().setGalleryChangeListener();
-        PhotoSetManager.getInstance().setPhotoSetListener(this);
     }
 
     @Override
@@ -41,8 +38,4 @@ public class MainActivity extends ActionBarActivity implements PhotoSetManager.O
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onPhotoSetAdded(PhotoSet photoSet) {
-        Log.d("Photo Set Added ", "Photo Set Size: " + photoSet.size());
-    }
 }
