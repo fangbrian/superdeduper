@@ -9,11 +9,16 @@ import android.util.Log;
  */
 public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeListener {
 
+    public interface OnPhotoSetListener {
+        public void onPhotoSetAdded(PhotoSet photoSet);
+    }
+
     private static PhotoSetManager sManager;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
     private static final Integer IMAGE_DELAY_TIMEOUT = 5000;
-    private Integer photoCount = 0;
+    private PhotoSet photoSet = new PhotoSet();
+    private OnPhotoSetListener mListener;
 
     public static PhotoSetManager getInstance() {
         if (sManager != null) return sManager;
@@ -23,8 +28,12 @@ public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeList
         return sManager;
     }
 
-    public static void setListener() {
+    public void setGalleryChangeListener() {
         GalleryChangeManager.getInstance().setListener(sManager);
+    }
+
+    public void setPhotoSetListener(OnPhotoSetListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -32,18 +41,15 @@ public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeList
         Log.d("PhotoSetManager", photo.getTimestamp().toString());
         if (runnable != null) mHandler.removeCallbacks(runnable);
 
-        photoCount += 1;
+        photoSet.add(photo);
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (photoCount > 0) {
-                    Log.d("PhotoAdded", "There are a total of " + photoCount.toString() + " photos.");
-                    photoCount = 0;
+                if (mListener != null && photoSet.size() > 0) {
+                    Log.d("PhotoAdded", "There are a total of " + photoSet.size() + " photos.");
+                    mListener.onPhotoSetAdded(photoSet);
+                    photoSet.clear();
                 }
-                else {
-                    photoCount += 1;
-                }
-
             }
         };
 
