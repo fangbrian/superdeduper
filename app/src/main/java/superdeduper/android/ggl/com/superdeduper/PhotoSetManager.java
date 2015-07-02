@@ -4,13 +4,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import java.util.HashMap;
+
 /**
  * Created by fangbrian on 7/2/15.
  */
 public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeListener {
 
     public interface OnPhotoSetListener {
-        public void onPhotoSetAdded(PhotoSet photoSet);
+        public void onPhotoSetAdded(PhotoSet photoSet, Long timestamp);
     }
 
     private static PhotoSetManager sManager;
@@ -19,6 +21,7 @@ public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeList
     private static final Integer IMAGE_DELAY_TIMEOUT = 5000;
     private PhotoSet photoSet = new PhotoSet();
     private OnPhotoSetListener mListener;
+    private HashMap<Long, PhotoSet> mPhotoHash = new HashMap<>();
 
     public static PhotoSetManager getInstance() {
         if (sManager != null) return sManager;
@@ -36,6 +39,10 @@ public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeList
         mListener = listener;
     }
 
+    public PhotoSet getPhotoSet(Long timestamp) {
+        return mPhotoHash.get(timestamp);
+    }
+
     @Override
     public void onPhotoAdded(Photo photo) {
         Log.d("PhotoSetManager", photo.getTimestamp().toString());
@@ -47,7 +54,9 @@ public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeList
             public void run() {
                 if (mListener != null && photoSet.size() > 0) {
                     Log.d("PhotoAdded", "There are a total of " + photoSet.size() + " photos.");
-                    mListener.onPhotoSetAdded(photoSet);
+                    Long timestampId = System.currentTimeMillis();
+                    mListener.onPhotoSetAdded(photoSet, timestampId);
+                    mPhotoHash.put(timestampId, photoSet);
                     photoSet.clear();
                 }
             }

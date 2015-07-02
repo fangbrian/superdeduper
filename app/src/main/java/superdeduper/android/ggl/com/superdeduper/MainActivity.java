@@ -9,6 +9,8 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static final String PHOTOSET_TIMESTAMP = "PHOTOSET_TIMESTAMP";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
