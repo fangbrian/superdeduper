@@ -12,12 +12,16 @@ import android.util.Log;
  */
 public class GalleryChangeManager {
 
+    public interface OnGalleryChangeListener {
+        public void onPhotoAdded(Photo photo);
+    }
+
     private static GalleryChangeManager sManager;
     private static boolean sInitialized = false;
 
     private Context mContext;
     private ImageContentObserver mImageObserver;
-
+    private OnGalleryChangeListener mListener;
 
     public static GalleryChangeManager getInstance() {
         if (sManager != null) return sManager;
@@ -27,12 +31,16 @@ public class GalleryChangeManager {
     }
 
     public void initializeObserver(Context context) {
-        if(sInitialized) return;
+        if (sInitialized) return;
 
         mContext = context.getApplicationContext();
         mImageObserver = new ImageContentObserver(new Handler());
         mContext.getContentResolver().registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, mImageObserver);
         sInitialized = true;
+    }
+
+    public void setListener(OnGalleryChangeListener listener) {
+        mListener = listener;
     }
 
     private class ImageContentObserver extends ContentObserver {
@@ -58,9 +66,10 @@ public class GalleryChangeManager {
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
             Log.d("ContentObserver", "There is a change detected");
-            Photo returnedPhoto = getLatestPhoto();
-            Log.d("GET PHOTO", returnedPhoto.getTimestamp().toString());
-            Log.d("GET PHOTO PATH", returnedPhoto.getPath());
+            Photo latestPhoto = getLatestPhoto();
+            Log.d("GET PHOTO", latestPhoto.getTimestamp().toString());
+            Log.d("GET PHOTO PATH", latestPhoto.getPath());
+            mListener.onPhotoAdded(latestPhoto);
         }
 
         private Photo getLatestPhoto() {

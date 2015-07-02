@@ -14,7 +14,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         GalleryChangeManager.getInstance().initializeObserver(this);
-//        GallerChangeManager.getinstance().
+        PhotoSetManager.getInstance().setListener();
     }
 
     @Override
