@@ -18,11 +18,12 @@ import android.widget.ImageView;
 import java.io.File;
 import com.squareup.picasso.Picasso;
 
+
 public class MainActivity extends ActionBarActivity {
 
     public static final String PHOTOSET_TIMESTAMP = "PHOTOSET_TIMESTAMP";
 
-    private PhotoAdapter mAdapter;
+    private VerticalFragmentAdapter mAdapter;
     private ViewPager mViewPager;
 
     @Override
@@ -42,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
         PhotoSet photoSet = PhotoSetManager.getInstance().getPhotoSet(timestamp);
         if(photoSet == null) return;
 
-        mAdapter = new PhotoAdapter(getSupportFragmentManager(), photoSet);
+        mAdapter = new VerticalFragmentAdapter(getSupportFragmentManager(), photoSet);
         mViewPager.setAdapter(mAdapter);
     }
 
@@ -68,11 +69,11 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class PhotoAdapter extends FragmentPagerAdapter {
+    public static class VerticalFragmentAdapter extends FragmentPagerAdapter {
 
         private PhotoSet mPhotoSet;
 
-        public PhotoAdapter(FragmentManager fm, PhotoSet photoSet) {
+        public VerticalFragmentAdapter(FragmentManager fm, PhotoSet photoSet) {
             super(fm);
 
             mPhotoSet = photoSet;
@@ -82,7 +83,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public Fragment getItem(int i) {
             Photo photo = mPhotoSet.get(i);
-            return ImageFragment.newInstance(photo.getPath());
+            return VerticalFragment.newInstance(photo.getPath());
         }
 
         @Override
@@ -91,12 +92,12 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public static class ImageFragment extends Fragment {
+    public static class VerticalFragment extends Fragment {
         public static final String PATH_BUNDLE_KEY = "PATH_BUNDLE_KEY";
         private String mPath;
 
-        static ImageFragment newInstance(String path) {
-            ImageFragment f = new ImageFragment();
+        static VerticalFragment newInstance(String path) {
+            VerticalFragment f = new VerticalFragment();
 
             // Supply num input as an argument.
             Bundle args = new Bundle();
