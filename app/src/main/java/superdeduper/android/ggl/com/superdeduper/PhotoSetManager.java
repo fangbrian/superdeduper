@@ -40,25 +40,27 @@ public class PhotoSetManager implements GalleryChangeManager.OnGalleryChangeList
     }
 
     public PhotoSet getPhotoSet(Long timestamp) {
+        PhotoSet test = mPhotoHash.get(timestamp);
         return mPhotoHash.get(timestamp);
     }
 
     @Override
     public void onPhotoAdded(Photo photo) {
-        Log.d("PhotoSetManager", photo.getTimestamp().toString());
         if (runnable != null) mHandler.removeCallbacks(runnable);
 
         photoSet.add(photo);
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (mListener != null && photoSet.size() > 0) {
-                    Log.d("PhotoAdded", "There are a total of " + photoSet.size() + " photos.");
-                    Long timestampId = System.currentTimeMillis();
+                Long timestampId = System.currentTimeMillis();
+                if (mListener != null && photoSet.size() > 1) {
                     mListener.onPhotoSetAdded(photoSet, timestampId);
-                    mPhotoHash.put(timestampId, photoSet);
-                    photoSet.clear();
                 }
+
+                mPhotoHash.put(timestampId, photoSet);
+
+                photoSet = new PhotoSet();
+
             }
         };
 
