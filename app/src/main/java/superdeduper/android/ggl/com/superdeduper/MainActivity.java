@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import java.io.File;
 import com.squareup.picasso.Picasso;
 
+import fr.castorflex.android.verticalviewpager.VerticalViewPager;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -25,6 +27,7 @@ public class MainActivity extends ActionBarActivity {
 
     private VerticalFragmentAdapter mAdapter;
     private ViewPager mViewPager;
+    private PhotoSet mPhotoSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +43,10 @@ public class MainActivity extends ActionBarActivity {
         if (getIntent() == null || getIntent().getExtras() == null) return;
 
         Long timestamp = getIntent().getExtras().getLong(PHOTOSET_TIMESTAMP, 0);
-        PhotoSet photoSet = PhotoSetManager.getInstance().getPhotoSet(timestamp);
-        if(photoSet == null) return;
+        mPhotoSet = PhotoSetManager.getInstance().getPhotoSet(timestamp);
+        if(mPhotoSet == null) return;
 
-        mAdapter = new VerticalFragmentAdapter(getSupportFragmentManager(), photoSet);
+        mAdapter = new VerticalFragmentAdapter(this.getSupportFragmentManager(), mPhotoSet);
         mViewPager.setAdapter(mAdapter);
     }
 
@@ -83,6 +86,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public Fragment getItem(int i) {
             Photo photo = mPhotoSet.get(i);
+            Log.d("****", "Current Index" + i);
+            Log.d("****", photo.getPath());
             return VerticalFragment.newInstance(photo.getPath());
         }
 
@@ -95,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
     public static class VerticalFragment extends Fragment {
         public static final String PATH_BUNDLE_KEY = "PATH_BUNDLE_KEY";
         private String mPath;
-
+        private PhotoAdapter mAdapter;
         static VerticalFragment newInstance(String path) {
             VerticalFragment f = new VerticalFragment();
 
@@ -118,10 +123,13 @@ public class MainActivity extends ActionBarActivity {
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_image, container, false);
-            ImageView imageView = (ImageView) v.findViewById(R.id.image_view);
-            File imgFile = new File(mPath);
-            Picasso.with(getActivity()).load(imgFile).fit().centerInside().into(imageView);
+            View v = inflater.inflate(R.layout.fragment_view, container, false);
+            //ImageView imageView = (ImageView) v.findViewById(R.id.image_view);
+            //File imgFile = new File(mPath);
+            //Picasso.with(getActivity()).load(imgFile).fit().centerInside().into(imageView);
+            VerticalViewPager mVerticalPager = (VerticalViewPager) v.findViewById(R.id.vertical_view);
+            mAdapter = new PhotoAdapter(this.getChildFragmentManager(), mPath);
+            mVerticalPager.setAdapter(mAdapter);
 
             return v;
         }
