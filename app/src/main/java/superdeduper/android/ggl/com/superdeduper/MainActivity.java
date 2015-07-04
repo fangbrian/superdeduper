@@ -136,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
                 public void onPageSelected(int position) {
                     // Check if this is the page you want.
                     Log.d("*****page selected", getView().findViewById(R.id.vertical_view).getTag().toString());
-                    //File file = new File(getView().findViewById(R.id.vertical_view).getTag().toString());
+//                    File file = new File(getView().findViewById(R.id.vertical_view).getTag().toString());
 //                    if(file.exists()) file.delete();
 //                    mAdapter.notifyDataSetChanged();
 
