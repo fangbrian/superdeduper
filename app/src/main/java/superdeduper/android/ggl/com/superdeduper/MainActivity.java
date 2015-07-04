@@ -124,12 +124,24 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.fragment_view, container, false);
-            //ImageView imageView = (ImageView) v.findViewById(R.id.image_view);
-            //File imgFile = new File(mPath);
-            //Picasso.with(getActivity()).load(imgFile).fit().centerInside().into(imageView);
             VerticalViewPager mVerticalPager = (VerticalViewPager) v.findViewById(R.id.vertical_view);
+            mVerticalPager.setTag(mPath);
             mAdapter = new PhotoAdapter(this.getChildFragmentManager(), mPath);
             mVerticalPager.setAdapter(mAdapter);
+
+            mVerticalPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                public void onPageScrollStateChanged(int state) {}
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+                public void onPageSelected(int position) {
+                    // Check if this is the page you want.
+                    Log.d("*****page selected", getView().findViewById(R.id.vertical_view).getTag().toString());
+                    //File file = new File(getView().findViewById(R.id.vertical_view).getTag().toString());
+//                    if(file.exists()) file.delete();
+//                    mAdapter.notifyDataSetChanged();
+
+                }
+            });
 
             return v;
         }
